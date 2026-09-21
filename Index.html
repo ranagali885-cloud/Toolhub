@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-In-One Tool Hub | Media & Document Converter</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF Library for Client-side Image to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between font-sans">
+
+    <!-- Header / Navbar -->
+    <header class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 text-2xl"></i>
+                <h1 class="text-xl md:text-2xl font-bold text-white tracking-wide">ToolHub Studio</h1>
+            </div>
+            <span class="text-xs md:text-sm bg-indigo-600/30 text-indigo-400 px-3 py-1 rounded-full border border-indigo-500/30">
+                100% Free Tools
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-grow">
+
+        <!-- TOP ADSENSE AD PLACEHOLDER -->
+        <div class="mb-8 p-4 bg-gray-800/60 border-2 border-dashed border-gray-700 rounded-xl text-center">
+            <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold block mb-1">Advertisement</span>
+            <div class="h-20 md:h-24 bg-gray-700/40 rounded flex items-center justify-center text-gray-500 text-sm">
+                <!-- Google AdSense Header Responsive Ad Code Goes Here -->
+                [ Top AdSpace - 728x90 / Responsive Ad Banner ]
+            </div>
+        </div>
+
+        <!-- Tool Selection Tabs -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-8">
+            <button onclick="switchTab('img2pdf')" id="btn-img2pdf" class="tab-btn active-tab bg-indigo-600 text-white p-3 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-indigo-500 transition shadow">
+                <i class="fa-solid fa-file-image text-lg"></i>
+                <span class="text-xs md:text-sm font-medium">Image to PDF</span>
+            </button>
+            <button onclick="switchTab('pdf2img')" id="btn-pdf2img" class="tab-btn bg-gray-800 text-gray-300 p-3 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition">
+                <i class="fa-solid fa-file-pdf text-lg"></i>
+                <span class="text-xs md:text-sm font-medium">PDF to Image</span>
+            </button>
+            <button onclick="switchTab('word2pdf')" id="btn-word2pdf" class="tab-btn bg-gray-800 text-gray-300 p-3 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition">
+                <i class="fa-solid fa-file-word text-lg"></i>
+                <span class="text-xs md:text-sm font-medium">Word to PDF</span>
+            </button>
+            <button onclick="switchTab('pdf2word')" id="btn-pdf2word" class="tab-btn bg-gray-800 text-gray-300 p-3 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition">
+                <i class="fa-solid fa-file-lines text-lg"></i>
+                <span class="text-xs md:text-sm font-medium">PDF to Word</span>
+            </button>
+            <button onclick="switchTab('videodl')" id="btn-videodl" class="tab-btn col-span-2 md:col-span-1 bg-gray-800 text-gray-300 p-3 rounded-lg flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition">
+                <i class="fa-solid fa-video text-lg text-rose-400"></i>
+                <span class="text-xs md:text-sm font-medium">Video Downloader</span>
+            </button>
+        </div>
+
+        <!-- TOOL SECTIONS -->
+
+        <!-- 1. Image to PDF Section -->
+        <div id="tool-img2pdf" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-image text-indigo-400"></i> Image to PDF Converter
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">Convert PNG, JPG, or JPEG images into a clean PDF document instantly.</p>
+            
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center bg-gray-900/50 hover:border-indigo-500 transition cursor-pointer" onclick="document.getElementById('imgInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-400 mb-3"></i>
+                <p class="text-sm text-gray-300 font-medium">Click to upload or drag image here</p>
+                <input type="file" id="imgInput" accept="image/*" class="hidden" onchange="previewImage(event)">
+            </div>
+            
+            <div id="imgPreviewBox" class="mt-4 hidden text-center">
+                <img id="imgPreview" class="max-h-48 mx-auto rounded-lg border border-gray-700 mb-4 shadow-md">
+                <button onclick="convertImgToPdf()" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition">
+                    Convert & Download PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. PDF to Image Section -->
+        <div id="tool-pdf2img" class="tool-card hidden bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-pdf text-red-400"></i> PDF to Image Converter
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">Extract high-quality images from your PDF files.</p>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center bg-gray-900/50">
+                <input type="file" accept=".pdf" class="mb-4 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500">
+                <button onclick="simulateServerAction('PDF to Image')" class="w-full md:w-auto mt-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+                    Extract Images
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. Word to PDF Section -->
+        <div id="tool-word2pdf" class="tool-card hidden bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-word text-blue-400"></i> Word to PDF Converter
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">Convert DOCX or DOC files into PDF format.</p>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center bg-gray-900/50">
+                <input type="file" accept=".doc,.docx" class="mb-4 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500">
+                <button onclick="simulateServerAction('Word to PDF')" class="w-full md:w-auto mt-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+                    Convert to PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. PDF to Word Section -->
+        <div id="tool-pdf2word" class="tool-card hidden bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                <i class="fa-solid fa-file-lines text-emerald-400"></i> PDF to Word Converter
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">Convert PDF documents into editable Word files.</p>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center bg-gray-900/50">
+                <input type="file" accept=".pdf" class="mb-4 block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-600 file:text-white hover:file:bg-emerald-500">
+                <button onclick="simulateServerAction('PDF to Word')" class="w-full md:w-auto mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+                    Convert to Word
+                </button>
+            </div>
+        </div>
+
+        <!-- 5. Video Downloader Section -->
+        <div id="tool-videodl" class="tool-card hidden bg-gray-800 border border-gray-700 rounded-2xl p-6 md:p-8 shadow-xl">
+            <h2 class="text-xl font-bold mb-2 text-white flex items-center gap-2">
+                <i class="fa-solid fa-link text-rose-400"></i> Video Link Paste Downloader
+            </h2>
+            <p class="text-gray-400 text-sm mb-6">Paste video link from social platforms to download MP4 or MP3.</p>
+            <div class="flex flex-col gap-4">
+                <div class="relative">
+                    <input type="url" id="videoUrlInput" placeholder="Paste Video URL (YouTube, TikTok, Instagram)..." class="w-full bg-gray-900 border border-gray-700 text-white p-4 pr-12 rounded-xl focus:outline-none focus:border-rose-500 text-sm">
+                    <i class="fa-solid fa-paste absolute right-4 top-4 text-gray-500 cursor-pointer hover:text-white" onclick="pasteFromClipboard()"></i>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="handleVideoDownload('mp4')" class="flex-1 bg-rose-600 hover:bg-rose-500 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-download"></i> Download MP4
+                    </button>
+                    <button onclick="handleVideoDownload('mp3')" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-music"></i> Download MP3
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM ADSENSE AD PLACEHOLDER -->
+        <div class="mt-8 p-4 bg-gray-800/60 border-2 border-dashed border-gray-700 rounded-xl text-center">
+            <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold block mb-1">Advertisement</span>
+            <div class="h-20 md:h-24 bg-gray-700/40 rounded flex items-center justify-center text-gray-500 text-sm">
+                <!-- Google AdSense Footer Responsive Ad Code Goes Here -->
+                [ Bottom AdSpace - Responsive Banner Ad ]
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-6 text-center text-xs text-gray-400">
+        <p>© 2026 ToolHub Studio. All rights reserved. Fast, Free & Secure File Tools.</p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(toolId) {
+            document.querySelectorAll('.tool-card').forEach(card => card.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white', 'active-tab');
+                btn.classList.add('bg-gray-800', 'text-gray-300');
+            });
+
+            document.getElementById('tool-' + toolId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + toolId);
+            activeBtn.classList.remove('bg-gray-800', 'text-gray-300');
+            activeBtn.classList.add('bg-indigo-600', 'text-white', 'active-tab');
+        }
+
+        // Image to PDF preview logic
+        let selectedImgData = null;
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    selectedImgData = e.target.result;
+                    document.getElementById('imgPreview').src = selectedImgData;
+                    document.getElementById('imgPreviewBox').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Working Image to PDF Generator (Client Side)
+        function convertImgToPdf() {
+            if (!selectedImgData) return alert('Please select an image first!');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.addImage(selectedImgData, 'JPEG', 10, 10, 180, 160);
+            doc.save('converted-document.pdf');
+        }
+
+        // Video Download Handler (Alerts user for backend connection)
+        function handleVideoDownload(type) {
+            const url = document.getElementById('videoUrlInput').value.trim();
+            if (!url) {
+                alert('Please paste a valid video URL first!');
+                return;
+            }
+            alert(`Backend request triggered for ${type.toUpperCase()}:\n${url}\n\nNote: Connect your Python Render backend API endpoint to process the URL.`);
+        }
+
+        // Simulated action feedback for Word/PDF conversions
+        function simulateServerAction(toolName) {
+            alert(`${toolName} feature selected. Attach your server-side conversion API endpoint here.`);
+        }
+
+        // Clipboard paste helper
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('videoUrlInput').value = text;
+            } catch (err) {
+                alert('Please manually paste the URL into the field.');
+            }
+        }
+    </script>
+</body>
+  </html>
+  
