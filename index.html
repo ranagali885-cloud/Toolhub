@@ -1,154 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All-in-One File & Video Converter Hub</title>
-  <!-- jsPDF Library for Image to PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background-color: #f4f6f9; color: #333; padding: 20px; }
-    .header { text-align: center; margin-bottom: 25px; }
-    .header h1 { color: #1a73e8; margin-bottom: 5px; }
-    .header p { color: #666; font-size: 14px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolHub Studio | All-in-One Converter & Downloader</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    /* Navigation Tabs */
-    .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; }
-    .tab-btn { background: #fff; border: 1px solid #ddd; padding: 10px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-    .tab-btn.active, .tab-btn:hover { background: #1a73e8; color: #fff; border-color: #1a73e8; }
-    
-    /* Card Container */
-    .tool-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    .tool-box { display: none; }
-    .tool-box.active { display: block; }
-    
-    .upload-area { border: 2px dashed #1a73e8; background: #f8fafd; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
-    .upload-area input { display: none; }
-    .btn-action { width: 100%; background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
-    .btn-action:hover { background: #1557b0; }
-    .url-input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; font-size: 14px; }
-    .file-status { margin-top: 10px; font-weight: bold; color: #28a745; text-align: center; }
-  </style>
+    <!-- Required Libraries for Real File Conversion & Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- JSZip for Downloading Unlimited PDF Pages as ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
-<body>
+<body id="appBody" class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between font-sans">
 
-  <div class="header">
-    <h1>Multi-Tool Converter & Downloader</h1>
-    <p>Apni files convert karein ya social media videos download karein</p>
-  </div>
+    <!-- Header / Navbar -->
+    <header class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 text-2xl"></i>
+                <h1 class="text-xl md:text-2xl font-bold text-white">ToolHub Studio</h1>
+            </div>
+            <span class="text-xs text-emerald-400 font-semibold border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 rounded-full">
+                ✓ 100% Free & Unlimited Downloads
+            </span>
+        </div>
+    </header>
 
-  <!-- Navigation Tabs for Client -->
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTool('imgToPdf')">🖼️ Image to PDF</button>
-    <button class="tab-btn" onclick="switchTool('pdfToImg')">📄 PDF to Image</button>
-    <button class="tab-btn" onclick="switchTool('docConvert')">📝 Word / PDF / Excel</button>
-    <button class="tab-btn" onclick="switchTool('videoDownloader')">🎥 Video Downloader</button>
-  </div>
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 w-full flex-grow">
 
-  <div class="tool-container">
-    
-    <!-- 1. Image to PDF (Fully Working for Unlimited Images) -->
-    <div id="imgToPdf" class="tool-box active">
-      <h2>Image to PDF Converter</h2>
-      <p style="margin-bottom: 15px; font-size: 13px; color: #666;">Unlimited 10, 15 ya 20+ images ek saath select karke PDF me convert karein.</p>
-      
-      <div class="upload-area" onclick="document.getElementById('imgInput').click()">
-        <p>📁 Click Karein ya Images Choose Karein</p>
-        <input type="file" id="imgInput" accept="image/*" multiple />
-        <div id="imgCount" class="file-status"></div>
-      </div>
-      <button class="btn-action" onclick="convertImgToPdf()">Download PDF</button>
-    </div>
+        <!-- Tool Selection Tabs -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 mb-6">
+            <button onclick="switchTab('img2pdf')" id="btn-img2pdf" class="tab-btn active-tab bg-indigo-600 text-white p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-image"></i>
+                <span class="text-xs">Image to PDF</span>
+            </button>
+            <button onclick="switchTab('pdf2img')" id="btn-pdf2img" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-pdf text-red-400"></i>
+                <span class="text-xs">PDF to Image</span>
+            </button>
+            <button onclick="switchTab('word2pdf')" id="btn-word2pdf" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-word text-blue-400"></i>
+                <span class="text-xs">Word to PDF</span>
+            </button>
+            <button onclick="switchTab('pdf2word')" id="btn-pdf2word" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-lines text-teal-400"></i>
+                <span class="text-xs">PDF to Word</span>
+            </button>
+            <button onclick="switchTab('excel2word')" id="btn-excel2word" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-file-excel text-emerald-400"></i>
+                <span class="text-xs">Excel to Word</span>
+            </button>
+            <button onclick="switchTab('word2excel')" id="btn-word2excel" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-table text-amber-400"></i>
+                <span class="text-xs">Word to Excel</span>
+            </button>
+            <button onclick="switchTab('bgremover')" id="btn-bgremover" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-scissors text-purple-400"></i>
+                <span class="text-xs">BG Remover</span>
+            </button>
+            <button onclick="switchTab('video1')" id="btn-video1" class="tab-btn bg-gray-800 text-gray-300 p-2.5 rounded-xl flex flex-col items-center gap-1">
+                <i class="fa-solid fa-video text-rose-400"></i>
+                <span class="text-xs">Video Downloader</span>
+            </button>
+        </div>
 
-    <!-- 2. PDF to Image -->
-    <div id="pdfToImg" class="tool-box">
-      <h2>PDF to Image Converter</h2>
-      <p style="margin-bottom: 15px; font-size: 13px; color: #666;">PDF file select karein aur images me convert karein.</p>
-      <div class="upload-area" onclick="document.getElementById('pdfInput').click()">
-        <p>📄 Select PDF File</p>
-        <input type="file" id="pdfInput" accept="application/pdf" />
-      </div>
-      <button class="btn-action" onclick="alert('PDF to Image processing logic link yahan aayega.')">Convert to Images</button>
-    </div>
+        <!-- 1. Image to PDF (Unlimited Images) -->
+        <div id="tool-img2pdf" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-white mb-2">Image to PDF Converter (Unlimited Photos)</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('imgInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Click to upload images (No limit: 10, 50, 100+ photos)</p>
+                <input type="file" id="imgInput" accept="image/*" multiple class="hidden" onchange="handleImgPreview(event)">
+            </div>
+            <div id="imgPreviewBox" class="mt-4 hidden text-center space-y-3">
+                <p id="imgCountText" class="text-sm text-emerald-400 font-bold"></p>
+                <button onclick="downloadImgToPdf()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 font-semibold rounded-lg text-white">
+                    <i class="fa-solid fa-download mr-1"></i> Download PDF Now
+                </button>
+            </div>
+        </div>
 
-    <!-- 3. Word / Excel / PDF Converters -->
-    <div id="docConvert" class="tool-box">
-      <h2>Document Converter</h2>
-      <p style="margin-bottom: 15px; font-size: 13px; color: #666;">Word to PDF, PDF to Word, Excel to Word, Word to Excel</p>
-      <div class="upload-area" onclick="document.getElementById('docInput').click()">
-        <p>📁 Choose Document File (.docx, .pdf, .xlsx)</p>
-        <input type="file" id="docInput" accept=".doc,.docx,.pdf,.xls,.xlsx" />
-      </div>
-      <button class="btn-action" onclick="alert('Document Conversion ke liye CloudConvert ya API connect karni hogi.')">Convert Document</button>
-    </div>
+        <!-- 2. PDF to Image (All Pages / Unlimited) -->
+        <div id="tool-pdf2img" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">PDF to Image Converter (All Pages)</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('pdfInput').click()">
+                <i class="fa-solid fa-file-pdf text-3xl text-red-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload PDF File (Converts all pages into Images)</p>
+                <input type="file" id="pdfInput" accept="application/pdf" class="hidden" onchange="convertPdfToImg(event)">
+            </div>
+            <div id="pdfResult" class="mt-4 text-center">
+                <p id="pdfStatusText" class="text-sm font-bold text-emerald-400"></p>
+            </div>
+        </div>
 
-    <!-- 4. TikTok, Insta, YouTube Video Downloader -->
-    <div id="videoDownloader" class="tool-box">
-      <h2>Video Downloader</h2>
-      <p style="margin-bottom: 15px; font-size: 13px; color: #666;">TikTok, Instagram, ya YouTube video ka link yahan paste karein:</p>
-      <input type="url" id="videoUrl" class="url-input" placeholder="Paste link here (e.g. https://www.tiktok.com/...)" />
-      <button class="btn-action" onclick="downloadVideo()">Download Video</button>
-    </div>
+        <!-- 3. Word to PDF -->
+        <div id="tool-word2pdf" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">Word to PDF Converter</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('docInput').click()">
+                <i class="fa-solid fa-file-word text-3xl text-blue-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload .docx File</p>
+                <input type="file" id="docInput" accept=".docx" class="hidden" onchange="convertWordToPdf(event)">
+            </div>
+            <div id="wordStatus" class="mt-4 text-center font-bold text-sm text-emerald-400"></div>
+        </div>
 
-  </div>
+        <!-- 4. PDF to Word -->
+        <div id="tool-pdf2word" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">PDF to Word Converter</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('pdf2wordInput').click()">
+                <i class="fa-solid fa-file-lines text-3xl text-teal-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload PDF File</p>
+                <input type="file" id="pdf2wordInput" accept="application/pdf" class="hidden" onchange="convertPdfToWord(event)">
+            </div>
+            <div id="pdf2wordStatus" class="mt-4 text-center font-bold text-sm text-emerald-400"></div>
+        </div>
 
-  <script>
-    const { jsPDF } = window.jspdf;
+        <!-- 5. Excel to Word -->
+        <div id="tool-excel2word" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">Excel to Word Converter</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('xlsInput').click()">
+                <i class="fa-solid fa-file-excel text-3xl text-emerald-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload .xlsx File</p>
+                <input type="file" id="xlsInput" accept=".xlsx, .xls" class="hidden" onchange="convertExcelToWord(event)">
+            </div>
+            <div id="xlsStatus" class="mt-4 text-center font-bold text-sm text-emerald-400"></div>
+        </div>
 
-    // Tab Switching Logic
-    function switchTool(toolId) {
-      document.querySelectorAll('.tool-box').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(toolId).classList.add('active');
-      event.currentTarget.classList.add('active');
-    }
+        <!-- 6. Word to Excel -->
+        <div id="tool-word2excel" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">Word to Excel Converter</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('doc2xlsInput').click()">
+                <i class="fa-solid fa-table text-3xl text-amber-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload .docx File</p>
+                <input type="file" id="doc2xlsInput" accept=".docx" class="hidden" onchange="convertWordToExcel(event)">
+            </div>
+            <div id="doc2xlsStatus" class="mt-4 text-center font-bold text-sm text-emerald-400"></div>
+        </div>
 
-    // Image Counter Display
-    document.getElementById('imgInput').addEventListener('change', (e) => {
-      const count = e.target.files.length;
-      document.getElementById('imgCount').textContent = count > 0 ? `✓ ${count} Images Selected` : '';
-    });
+        <!-- 7. BG Remover -->
+        <div id="tool-bgremover" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">Background Remover</h2>
+            <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('bgInput').click()">
+                <i class="fa-solid fa-scissors text-3xl text-purple-400 mb-2"></i>
+                <p class="text-sm text-gray-300">Upload Photo for BG Removal</p>
+                <input type="file" id="bgInput" accept="image/*" class="hidden" onchange="processBgRemoval(event)">
+            </div>
+            <div id="bgBox" class="mt-4 hidden text-center space-y-3">
+                <canvas id="bgCanvas" class="mx-auto max-h-52 border border-gray-700 rounded-lg"></canvas>
+                <button onclick="downloadBgPng()" class="px-6 py-2.5 bg-purple-600 hover:bg-purple-500 font-semibold rounded-lg text-white">
+                    <i class="fa-solid fa-download mr-1"></i> Download PNG
+                </button>
+            </div>
+        </div>
 
-    // Image to PDF Conversion (Unlimited Images Handling)
-    async function convertImgToPdf() {
-      const files = document.getElementById('imgInput').files;
-      if (files.length === 0) {
-        alert('Kam se kam ek image select karein!');
-        return;
-      }
+        <!-- 8. Video Downloader -->
+        <div id="tool-video1" class="tool-card bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl hidden">
+            <h2 class="text-lg font-bold text-white mb-2">Social Media Video Downloader</h2>
+            <p class="text-xs text-gray-400 mb-4">TikTok, Instagram, ya YouTube ka link paste karein:</p>
+            <div class="space-y-3">
+                <input type="text" id="videoUrlInput" placeholder="Paste Video URL here..." class="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white">
+                <button onclick="fetchAndDownloadVideo()" class="w-full py-3 bg-rose-600 hover:bg-rose-500 font-bold rounded-xl text-white">
+                    <i class="fa-solid fa-download mr-1"></i> Download Video Now
+                </button>
+            </div>
+            <div id="videoStatus" class="mt-4 text-center font-bold text-sm text-indigo-400"></div>
+        </div>
 
-      const pdf = new jsPDF();
-      for (let i = 0; i < files.length; i++) {
-        const imageData = await readFileAsDataURL(files[i]);
-        if (i > 0) pdf.addPage();
-        
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
-        pdf.addImage(imageData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-      }
-      pdf.save('converted-images.pdf');
-    }
+    </main>
 
-    function readFileAsDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = (err) => reject(err);
-        reader.readAsDataURL(file);
-      });
-    }
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 py-4 text-center text-xs text-gray-400">
+        &copy; 2026 ToolHub Studio. All tools work directly in your browser.
+    </footer>
 
-    // Dummy Video Downloader Handler
-    function downloadVideo() {
-      const url = document.getElementById('videoUrl').value;
-      if (!url) {
-        alert('Kripya video link paste karein!');
-        return;
-      }
-      alert('Video download karne ke liye RapidAPI ya Backend Downloader API ka URL connect karna padega.');
-    }
-  </script>
+    <!-- JavaScript Logic -->
+    <script>
+        const { jsPDF } = window.jspdf;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-</body>
-</html>
+        // Tab Switching
+        function switchTab(toolId) {
+            document.querySelectorAll('.tool-card').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active-tab', 'bg-indigo-600', 'text-white');
+                b.classList.add('bg-gray-800', 'text-gray-300');
+            });
+            document.getElementById('tool-' + toolId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + toolId);
+            activeBtn.classList.add('active-tab', 'bg-indigo-600', 'text-white');
+        }
+
+        // 1. Image to PDF (Supports Unlimited Images)
+        function handleImgPreview(e) {
+            const files = e.target.files;
+            if(files.length > 0) {
+                document.getElementById('imgCountText').textContent = `✓ ${files.length} Image(s) Selected & Ready to Convert`;
+                document.getElementById('imgPreviewBox').classList.remove('hidden');
+            }
+        }
+        async function downloadImgToPdf() {
+            const files = document.getElementById('imgInput').files;
+            if(!files.length) return;
+            const pdf = new jsPDF();
+            for(let i = 0; i < files.length; i++) {
+                const data = await readFileAsDataURL(files[i]);
+                if(i > 0) pdf.addPage();
+                pdf.addImage(data, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            }
+            pdf.save('converted-images.pdf');
+        }
+
+        // 2. PDF to Image (Converts ALL Pages into ZIP File)
+        async function convertPdfToImg(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const status = document.getElementById('pdfStatusText');
+            status.textContent = 'Processing PDF... Please wait.';
+
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const zip = new JSZip();
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                status.textContent = `Converting page ${i} of ${pdf.numPages}...`;
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+                const imgData = canvas.toDataURL('image/png').split(',')[1];
+                zip.file(`page_${i}.png`, imgData, { base64: true });
+            }
+
+            status.textContent = 'Creating ZIP file for download...';
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(zipBlob);
+            link.download = `${file.name.replace('.pdf', '')}_all_pages.zip`;
+            link.click();
+
+            status.textContent = `✓ Successfully downloaded all ${pdf.numPages} page(s) as ZIP!`;
+        }
+
+        // 3. Word to PDF
+        async function convertWordToPdf(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('wordStatus');
+            status.textContent = 'Converting Word document...';
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            
+            const pdf = new jsPDF();
+            const lines = pdf.splitTextToSize(result.value, 180);
+            pdf.text(lines, 10, 10);
+            pdf.save(`${file.name.replace('.docx', '')}.pdf`);
+            status.textContent = '✓ Downloaded as PDF!';
+        }
+
+        // 4. PDF to Word
+        async function convertPdfToWord(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('pdf2wordStatus');
+            status.textContent = 'Extracting PDF text...';
+            
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            let fullText = '';
+            
+            for(let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                fullText += textContent.items.map(item => item.str).join(' ') + '\n\n';
+            }
+
+            const blob = new Blob([fullText], { type: 'application/msword' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${file.name.replace('.pdf', '')}.doc`;
+            link.click();
+            status.textContent = '✓ Downloaded as Word (.doc)!';
+        }
+
+        // 5. Excel to Word
+        async function convertExcelToWord(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('xlsStatus');
+            status.textContent = 'Converting Excel sheet...';
+            
+            const data = await file.arrayBuffer();
+            const workbook = XLSX.read(data);
+            const sheetName = workbook.SheetNames[0];
+            const csv = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+
+            const blob = new Blob([csv], { type: 'application/msword' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${file.name.replace(/\.[^/.]+$/, "")}.doc`;
+            link.click();
+            status.textContent = '✓ Downloaded Excel table as Word!';
+        }
+
+        // 6. Word to Excel
+        async function convertWordToExcel(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const status = document.getElementById('doc2xlsStatus');
+            status.textContent = 'Extracting data to Excel...';
+            
+            const arrayBuffer = await file.arrayBuffer();
+            const result = await mammoth.extractRawText({ arrayBuffer });
+            
+            const lines = result.value.split('\n').filter(l => l.trim() !== '').map(l => [l]);
+            const worksheet = XLSX.utils.aoa_to_sheet(lines);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+            
+            XLSX.writeFile(workbook, `${file.name.replace('.docx', '')}.xlsx`);
+            status.textContent = '✓ Downloaded as Excel (.xlsx)!';
+        }
+
+        // 7. BG Remover
+        function processBgRemoval(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.getElementById('bgCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.h
